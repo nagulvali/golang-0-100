@@ -29,3 +29,15 @@
 ## Table Of Contents
 - [Introduction](./01.introduction)
 - [Fundamentals](./02.fundamentals)
+
+
+## How to learn
+- [ ] Language
+  - [ ] Fundamentals
+  - [ ] Advanced
+- [ ] Logic Building
+- [ ] DSA
+- [ ] DP
+- [ ] Design Patterns
+- [ ] Best Practices / Effective Programming 
+- [ ] System Design

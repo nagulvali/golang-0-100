@@ -14,4 +14,4 @@
 
 ## Table Of Contents
 - [Hello World](./01.hello-world)
-- 
+- [How Computers Work](./02.how-computers-work)
