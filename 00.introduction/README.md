@@ -20,6 +20,12 @@ Go has become an essential language for modern software development. It is parti
 - **Strong standard library**: Includes built-in packages for networking, HTTP servers, file I/O, and more.
 - **Cloud-native development**: Used by major cloud tools like Docker, Kubernetes, and Terraform.
 - **Cross-platform**: Compiles easily for Linux, Windows, macOS, and more.
+- Reasons to choose go
+  - Build time
+  - Fast startup
+  - Performance and efficiency
+  - Concurrency Model
+  - Static Typing and compilation
 
 Compared to other languages:
 
@@ -35,5 +41,5 @@ Go shines in areas where **high performance, concurrency, and simplicity** are c
 ---
 
 ## Table Of Contents
-- [Hello World](./01.hello-world)
+- [Hello World](../01.fundamentals/00.hello-world)
 - [How Computers Work](./02.how-computers-work)

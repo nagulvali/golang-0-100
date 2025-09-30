@@ -8,6 +8,8 @@
 
 ## Motivation
 
+## 80-20 Rule
+
 ## References
 - [Go Documentation](https://go.dev/doc)
 - [Go Lang Specification](https://go.dev/ref/spec)
@@ -27,8 +29,8 @@
 - 
 
 ## Table Of Contents
-- [Introduction](./01.introduction)
-- [Fundamentals](./02.fundamentals)
+- [Introduction](./00.introduction)
+- [Fundamentals](./01.fundamentals)
 
 
 ## How to learn
