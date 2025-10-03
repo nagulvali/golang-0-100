@@ -1,6 +1,8 @@
 ## Go Slices
 
-Slices are dynamic, flexible views over arrays. They are the most common sequence type in Go. A slice has three components: pointer to an underlying array, length (number of elements), and capacity (maximum elements it can grow to before reallocating).
+- Slices are dynamic, flexible views over arrays. 
+- They are the most common sequence type in Go.
+- A slice has three components: pointer to an underlying array, length (number of elements), and capacity (maximum elements it can grow to before reallocating).
 
 ### Zero value and basics
 ```go
