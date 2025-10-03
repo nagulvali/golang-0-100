@@ -1,110 +1,488 @@
-## Go Slices — Practice Problems
+# Slices Practice Problems
 
-A curated set of problems to build intuition and fluency with Go slices. Implement solutions in Go. Prefer in-place operations when appropriate, and pay attention to length vs capacity, allocations, and backing arrays.
+This document contains practice problems for Go slices to help you build logic and problem-solving skills. Problems are organized by difficulty level and topic.
 
-Conventions:
-- Unless specified, functions should not panic on invalid input; return a sensible result (or error) instead.
-- Aim for O(n) time for linear scans, O(1) extra space when feasible.
+## Table of Contents
 
-### Basics and Construction
-1) Initialize slice with N copies of value V (no loops in literal).
-2) Return a slice of the first N natural numbers starting from 1.
-3) Clone a slice without using `append(s, ...)` on itself.
-4) Convert an array `[N]int` to `[]int` and back (copying required for back conversion).
-5) Check if a slice is nil vs empty; normalize input so you always return an empty, non-nil slice.
-6) Ensure capacity: given `[]int` and target capacity C, return a slice that shares data if possible; otherwise, reallocate.
-
-### Indexing and Slicing
-7) Safe sub-slice: implement `Sub(s []int, i, j int) []int` that clamps i, j into [0..len(s)] and returns a valid sub-slice.
-8) Rightmost K elements: `LastK(s []T, k int) []T` without allocation; use full slice expression to cap capacity.
-9) Middle window: return a view of length W centered around index I, clamped to bounds.
-10) Split halves: split a slice into two nearly equal halves (left gets the extra when odd).
-
-### Reading and Aggregation
-11) Sum, min, max of `[]int`. Return zero values for empty input.
-12) Prefix sums: return a slice p where `p[i] = sum(s[:i+1])`.
-13) Count occurrences of a value V in `[]int` and first index of V (or -1).
-14) Distinct elements preserving first occurrence order.
-15) Frequency map of `[]string` values.
-
-### In-place Mutation
-16) Reverse a slice in-place.
-17) Rotate right by K in-place (with O(1) extra space). Hint: triple-reverse.
-18) Remove element at index I (preserve order). Return result slice.
-19) Remove element at index I (do not preserve order). Return result slice.
-20) Remove all occurrences of V in-place, returning the truncated slice (two-pointer write index).
-21) Deduplicate consecutive duplicates in-place (like UNIX uniq).
-22) Stable unique in-place with O(n) time and O(n) extra space allowed (map-based), returning truncated slice.
-
-### Appending and Growth
-23) Append many: append contents of `[][]int` into a single `[]int` with one allocation pre-sized by total length.
-24) Bounded append: append up to K items from `src` to `dst` without reallocating `dst` (if insufficient cap, return `dst` unchanged and a bool).
-25) Ensure no aliasing: return a copy of `s` that cannot affect future appends to `base` when appended to `base`.
-
-### Copying and Detaching
-26) Copy a sub-range `[i:j)` into a new slice `t` and return `t`.
-27) Detach from large backing array: given a tiny sub-slice of a huge array-backed slice, return a compact copy.
-28) Merge two sorted slices into a new sorted slice; stable.
-
-### Searching and Two-Pointer Patterns
-29) Binary search for target in a sorted `[]int` (return index or -1).
-30) Lower bound and upper bound indices for target in sorted `[]int`.
-31) Two-sum: given `[]int` and target, return indices of two numbers (any order). Provide O(n) hash-map solution.
-32) Move zeros to the end in-place, preserving non-zero order.
-
-### Partitioning and Filtering
-33) Stable partition: move all elements satisfying predicate to front, preserving relative order; return split index.
-34) Unstable partition: partition by predicate in-place with O(1) extra space, order not preserved; return split index.
-35) Filter with allocation budget: filter `s` by predicate using at most one new allocation.
-
-### Windows and Subarrays
-36) Maximum subarray sum (Kadane). Return sum and `[i:j)` sub-slice indices.
-37) Longest subarray with sum <= K (non-negative numbers) using sliding window; return indices.
-38) All sub-slices of fixed length L (return a slice of views; discuss lifetime and aliasing).
-
-### Strings, Bytes, and Runes
-39) Reverse a `[]byte` in-place.
-40) Reverse a UTF-8 string properly by converting to `[]rune` and back.
-41) Deduplicate adjacent whitespace in a byte slice in-place, returning the truncated slice.
-42) Tokenize a byte slice by a delimiter (single byte), returning sub-slice views; avoid allocations.
-
-### Matrix (Slices of Slices)
-43) Create an `R x C` matrix of `int` with independent rows (no shared backing rows).
-44) Transpose a dense `[][]int`. Allocate a new matrix.
-45) In-place transpose of a square matrix represented as `[][]int` with contiguous backing (first build representation), then transpose.
-46) Spiral traversal of a 2D slice (return order of elements).
-
-### Sorting and Rearrangement
-47) Stable sort `[]struct{K int; V string}` by K then V using `slices.SortFunc` (Go 1.21+), or `sort.SliceStable` otherwise.
-48) Group anagrams: given `[]string`, group words that are anagrams into `[][]string`.
-49) Three-way partition (Dutch National Flag) for values -1, 0, 1 in-place.
-
-### Concurrency-Safe Patterns (Read-Only Sharing)
-50) Safely publish a large read-only slice to multiple goroutines: expose copies vs views; write an API that returns an immutable view (document contracts).
-51) Lock-free snapshot: atomically swap a pointer to a slice used for reads while writers prepare a new slice (copy-on-write pattern). Implement the swap function.
-
-### Memory and Capacity
-52) Trim capacity: return `t := append([]T(nil), s...)` and explain why this detaches from future appends.
-53) Cap a sub-slice using the three-index full slice expression to prevent append bleed-through into the original.
-54) Grow strategy experiment: append 1..N into a slice, record capacity growth steps, and summarize the pattern.
-
-### Error Handling and Validation
-55) Validate indices `(i, j)` for slicing; return `(sub, ok)` without panicking.
-56) Safe pop-front and pop-back for `[]T` returning `(value, rest, ok)`.
-
-### Higher-Level Utilities
-57) Map: apply `func(T) U` to `[]T` producing `[]U` with one allocation.
-58) Reduce: fold `[]T` with `func(acc U, t T) U`.
-59) Zip two slices into `[]struct{A, B}`; stop at min length.
-60) Chunk a slice into fixed-size groups (last chunk may be smaller).
+1. [Basic Slice Operations](#basic-slice-operations)
+2. [Slice Creation and Initialization](#slice-creation-and-initialization)
+3. [Slice Access and Modification](#slice-access-and-modification)
+4. [Slice Iteration Problems](#slice-iteration-problems)
+5. [Slice Manipulation Problems](#slice-manipulation-problems)
+6. [Slice Search and Filter Problems](#slice-search-and-filter-problems)
+7. [Slice Sorting Problems](#slice-sorting-problems)
+8. [Slice Memory and Performance](#slice-memory-and-performance)
+9. [Advanced Slice Algorithms](#advanced-slice-algorithms)
+10. [Real-World Slice Applications](#real-world-slice-applications)
 
 ---
 
-Hints and Notes:
-- Prefer two-index slicing for views and three-index slicing to control capacity when you will append.
-- When removing elements in-place, use a write index to avoid extra allocations.
-- Be mindful of aliasing when returning views over shared backing arrays; document contracts.
-- For stable operations that shrink the slice, prefer returning `s[:n]` rather than allocating a new slice.
-- Use `copy` for overlapping ranges during insert/delete to prevent data clobbering.
+## Basic Slice Operations
 
+### Problem 1: Slice Declaration
+**Difficulty**: Easy
+**Description**: Declare slices of different types (int, string, float64, bool) and understand nil slices.
 
+### Problem 2: Slice Initialization
+**Difficulty**: Easy
+**Description**: Initialize slices using literal values, make function, and zero values.
+
+### Problem 3: Slice Length and Capacity
+**Difficulty**: Easy
+**Description**: Understand and work with slice length and capacity properties.
+
+### Problem 4: Slice Indexing
+**Difficulty**: Easy
+**Description**: Access slice elements by index and handle bounds checking.
+
+### Problem 5: Slice Assignment
+**Difficulty**: Easy
+**Description**: Assign values to slice elements and modify existing values.
+
+### Problem 6: Slice Copy
+**Difficulty**: Easy
+**Description**: Copy slices and understand reference semantics.
+
+### Problem 7: Slice Comparison
+**Difficulty**: Easy
+**Description**: Compare slices for equality and understand comparison limitations.
+
+### Problem 8: Slice Zero Values
+**Difficulty**: Easy
+**Description**: Understand zero values for slices and nil slice behavior.
+
+---
+
+## Slice Creation and Initialization
+
+### Problem 9: Literal Initialization
+**Difficulty**: Easy
+**Description**: Initialize slices using slice literals with different patterns.
+
+### Problem 10: Make Function
+**Difficulty**: Easy
+**Description**: Create slices using make function with length and capacity.
+
+### Problem 11: Slice from Array
+**Difficulty**: Easy
+**Description**: Create slices from arrays using slicing operations.
+
+### Problem 12: Slice from Slice
+**Difficulty**: Easy
+**Description**: Create new slices from existing slices using slicing operations.
+
+### Problem 13: Empty Slice Creation
+**Difficulty**: Easy
+**Description**: Create empty slices and understand different ways to create them.
+
+### Problem 14: Slice with Capacity
+**Difficulty**: Medium
+**Description**: Create slices with specific capacity for performance optimization.
+
+### Problem 15: Slice of Structs
+**Difficulty**: Medium
+**Description**: Initialize slices containing struct elements.
+
+### Problem 16: Slice of Pointers
+**Difficulty**: Medium
+**Description**: Initialize slices containing pointer elements.
+
+---
+
+## Slice Access and Modification
+
+### Problem 17: Sequential Access
+**Difficulty**: Easy
+**Description**: Access slice elements sequentially from first to last.
+
+### Problem 18: Reverse Access
+**Difficulty**: Easy
+**Description**: Access slice elements in reverse order from last to first.
+
+### Problem 19: Random Access
+**Difficulty**: Easy
+**Description**: Access slice elements at random indices.
+
+### Problem 20: Bounds Checking
+**Difficulty**: Easy
+**Description**: Implement bounds checking to prevent index out of range errors.
+
+### Problem 21: Safe Access
+**Difficulty**: Medium
+**Description**: Create safe slice access functions that return errors for invalid indices.
+
+### Problem 22: Slice Modification
+**Difficulty**: Medium
+**Description**: Modify slice elements and track changes.
+
+### Problem 23: Conditional Modification
+**Difficulty**: Medium
+**Description**: Modify slice elements based on conditions.
+
+### Problem 24: Batch Modification
+**Difficulty**: Medium
+**Description**: Modify multiple slice elements in a single operation.
+
+---
+
+## Slice Iteration Problems
+
+### Problem 25: For Loop Iteration
+**Difficulty**: Easy
+**Description**: Iterate through slices using traditional for loops.
+
+### Problem 26: Range Loop Iteration
+**Difficulty**: Easy
+**Description**: Iterate through slices using range loops.
+
+### Problem 27: Index and Value Iteration
+**Difficulty**: Easy
+**Description**: Iterate through slices getting both index and value.
+
+### Problem 28: Conditional Iteration
+**Difficulty**: Medium
+**Description**: Iterate through slices with conditions and early exit.
+
+### Problem 29: Nested Iteration
+**Difficulty**: Medium
+**Description**: Iterate through slices of slices using nested loops.
+
+### Problem 30: Skip Elements
+**Difficulty**: Medium
+**Description**: Iterate through slices skipping certain elements.
+
+### Problem 31: Reverse Iteration
+**Difficulty**: Medium
+**Description**: Iterate through slices in reverse order.
+
+### Problem 32: Step Iteration
+**Difficulty**: Medium
+**Description**: Iterate through slices with custom step sizes.
+
+---
+
+## Slice Manipulation Problems
+
+### Problem 33: Slice Append
+**Difficulty**: Easy
+**Description**: Append elements to slices and understand capacity growth.
+
+### Problem 34: Slice Prepend
+**Difficulty**: Medium
+**Description**: Add elements to the beginning of slices.
+
+### Problem 35: Slice Insert
+**Difficulty**: Medium
+**Description**: Insert elements at specific positions in slices.
+
+### Problem 36: Slice Delete
+**Difficulty**: Medium
+**Description**: Delete elements from slices at specific positions.
+
+### Problem 37: Slice Remove
+**Difficulty**: Medium
+**Description**: Remove specific values from slices.
+
+### Problem 38: Slice Reverse
+**Difficulty**: Medium
+**Description**: Reverse the order of elements in a slice.
+
+### Problem 39: Slice Rotation
+**Difficulty**: Medium
+**Description**: Rotate slice elements by k positions.
+
+### Problem 40: Slice Shuffle
+**Difficulty**: Medium
+**Description**: Randomly shuffle elements in a slice.
+
+---
+
+## Slice Search and Filter Problems
+
+### Problem 41: Linear Search
+**Difficulty**: Easy
+**Description**: Implement linear search to find an element in a slice.
+
+### Problem 42: Find All Occurrences
+**Difficulty**: Easy
+**Description**: Find all occurrences of an element in a slice.
+
+### Problem 43: Find First Occurrence
+**Difficulty**: Easy
+**Description**: Find the first occurrence of an element in a slice.
+
+### Problem 44: Find Last Occurrence
+**Difficulty**: Easy
+**Description**: Find the last occurrence of an element in a slice.
+
+### Problem 45: Binary Search
+**Difficulty**: Medium
+**Description**: Implement binary search on sorted slices.
+
+### Problem 46: Slice Filter
+**Difficulty**: Medium
+**Description**: Filter elements from a slice based on condition.
+
+### Problem 47: Slice Map
+**Difficulty**: Medium
+**Description**: Transform elements in a slice using a function.
+
+### Problem 48: Slice Reduce
+**Difficulty**: Medium
+**Description**: Reduce a slice to a single value using a function.
+
+---
+
+## Slice Sorting Problems
+
+### Problem 49: Bubble Sort
+**Difficulty**: Medium
+**Description**: Implement bubble sort algorithm for slices.
+
+### Problem 50: Selection Sort
+**Difficulty**: Medium
+**Description**: Implement selection sort algorithm for slices.
+
+### Problem 51: Insertion Sort
+**Difficulty**: Medium
+**Description**: Implement insertion sort algorithm for slices.
+
+### Problem 52: Merge Sort
+**Difficulty**: Hard
+**Description**: Implement merge sort algorithm for slices.
+
+### Problem 53: Quick Sort
+**Difficulty**: Hard
+**Description**: Implement quick sort algorithm for slices.
+
+### Problem 54: Custom Sort
+**Difficulty**: Medium
+**Description**: Sort slices based on custom comparison functions.
+
+### Problem 55: Sort by Multiple Criteria
+**Difficulty**: Hard
+**Description**: Sort slices by multiple criteria with priority.
+
+### Problem 56: Stable Sort
+**Difficulty**: Hard
+**Description**: Implement stable sorting that maintains relative order.
+
+---
+
+## Slice Memory and Performance
+
+### Problem 57: Slice Capacity Management
+**Difficulty**: Medium
+**Description**: Manage slice capacity to optimize memory usage.
+
+### Problem 58: Slice Reuse
+**Difficulty**: Medium
+**Description**: Reuse slices to reduce memory allocations.
+
+### Problem 59: Slice Pool
+**Difficulty**: Hard
+**Description**: Implement a slice pool for efficient memory management.
+
+### Problem 60: Slice Growth Strategy
+**Difficulty**: Hard
+**Description**: Implement custom slice growth strategies.
+
+### Problem 61: Memory Efficient Operations
+**Difficulty**: Hard
+**Description**: Perform slice operations with minimal memory usage.
+
+### Problem 62: Slice Compaction
+**Difficulty**: Hard
+**Description**: Compact slices to remove unused capacity.
+
+### Problem 63: Slice Fragmentation
+**Difficulty**: Expert
+**Description**: Handle slice fragmentation and memory optimization.
+
+### Problem 64: Slice Garbage Collection
+**Difficulty**: Expert
+**Description**: Optimize slice usage for garbage collection efficiency.
+
+---
+
+## Advanced Slice Algorithms
+
+### Problem 65: Two Sum
+**Difficulty**: Medium
+**Description**: Find two numbers in slice that add up to target sum.
+
+### Problem 66: Three Sum
+**Difficulty**: Hard
+**Description**: Find three numbers in slice that add up to target sum.
+
+### Problem 67: Maximum Subarray
+**Difficulty**: Hard
+**Description**: Find contiguous subarray with maximum sum.
+
+### Problem 68: Slice Product
+**Difficulty**: Medium
+**Description**: Calculate product of all elements except current element.
+
+### Problem 69: Missing Number
+**Difficulty**: Medium
+**Description**: Find missing number in slice of consecutive integers.
+
+### Problem 70: Duplicate Number
+**Difficulty**: Medium
+**Description**: Find duplicate number in slice of integers.
+
+### Problem 71: Slice Permutation
+**Difficulty**: Hard
+**Description**: Generate all permutations of slice elements.
+
+### Problem 72: Slice Combination
+**Difficulty**: Hard
+**Description**: Generate all combinations of slice elements.
+
+---
+
+## Real-World Slice Applications
+
+### Problem 73: Data Processing Pipeline
+**Difficulty**: Hard
+**Description**: Implement a data processing pipeline using slices.
+
+### Problem 74: Slice-Based Cache
+**Difficulty**: Hard
+**Description**: Implement a cache system using slices for storage.
+
+### Problem 75: Slice-Based Queue
+**Difficulty**: Medium
+**Description**: Implement a queue data structure using slices.
+
+### Problem 76: Slice-Based Stack
+**Difficulty**: Medium
+**Description**: Implement a stack data structure using slices.
+
+### Problem 77: Slice-Based Buffer
+**Difficulty**: Hard
+**Description**: Implement a buffer system using slices for data streaming.
+
+### Problem 78: Slice-Based Parser
+**Difficulty**: Hard
+**Description**: Implement a parser using slices for token management.
+
+### Problem 79: Slice-Based Database
+**Difficulty**: Expert
+**Description**: Implement a simple database using slices for storage.
+
+### Problem 80: Slice-Based Game Engine
+**Difficulty**: Expert
+**Description**: Implement a game engine using slices for game state management.
+
+---
+
+## Advanced Slice Problems
+
+### Problem 81: Slice-Based State Machine
+**Difficulty**: Expert
+**Description**: Implement a state machine using slices for state management.
+
+### Problem 82: Slice-Based Event System
+**Difficulty**: Expert
+**Description**: Implement an event system using slices for event handling.
+
+### Problem 83: Slice-Based Scheduler
+**Difficulty**: Expert
+**Description**: Implement a task scheduler using slices for task management.
+
+### Problem 84: Slice-Based Load Balancer
+**Difficulty**: Expert
+**Description**: Implement a load balancer using slices for server management.
+
+### Problem 85: Slice-Based Monitoring
+**Difficulty**: Expert
+**Description**: Implement a monitoring system using slices for metrics collection.
+
+### Problem 86: Slice-Based Analytics
+**Difficulty**: Expert
+**Description**: Implement an analytics system using slices for data processing.
+
+### Problem 87: Slice-Based Machine Learning
+**Difficulty**: Expert
+**Description**: Implement machine learning algorithms using slices for data representation.
+
+### Problem 88: Slice-Based Cryptography
+**Difficulty**: Expert
+**Description**: Implement cryptographic operations using slices for data manipulation.
+
+---
+
+## Bonus Challenges
+
+### Problem 89: Slice-Based Compiler
+**Difficulty**: Expert
+**Description**: Implement a compiler using slices for symbol tables and code generation.
+
+### Problem 90: Slice-Based Network Protocol
+**Difficulty**: Expert
+**Description**: Implement a network protocol using slices for packet handling.
+
+### Problem 91: Slice-Based Image Processing
+**Difficulty**: Expert
+**Description**: Implement image processing operations using slices for pixel manipulation.
+
+### Problem 92: Slice-Based Audio Processing
+**Difficulty**: Expert
+**Description**: Implement audio processing operations using slices for sample manipulation.
+
+### Problem 93: Slice-Based Video Processing
+**Difficulty**: Expert
+**Description**: Implement video processing operations using slices for frame manipulation.
+
+### Problem 94: Slice-Based Simulation
+**Difficulty**: Expert
+**Description**: Implement physical simulations using slices for state representation.
+
+### Problem 95: Slice-Based Visualization
+**Difficulty**: Expert
+**Description**: Implement data visualization using slices for chart generation.
+
+### Problem 96: Slice-Based Testing Framework
+**Difficulty**: Expert
+**Description**: Implement a testing framework using slices for test case management.
+
+### Problem 97: Slice-Based Configuration System
+**Difficulty**: Expert
+**Description**: Implement a configuration system using slices for setting management.
+
+### Problem 98: Slice-Based Logging System
+**Difficulty**: Expert
+**Description**: Implement a logging system using slices for log entry management.
+
+### Problem 99: Slice-Based Backup System
+**Difficulty**: Expert
+**Description**: Implement a backup system using slices for data chunk management.
+
+### Problem 100: Slice-Based Distributed System
+**Difficulty**: Expert
+**Description**: Implement a distributed system using slices for node management.
+
+---
+
+## Tips for Solving These Problems
+
+1. **Understand Slice Semantics**: Slices are reference types with dynamic size
+2. **Capacity Management**: Be aware of slice capacity and growth patterns
+3. **Memory Efficiency**: Optimize slice operations for memory usage
+4. **Performance**: Consider time and space complexity of slice operations
+5. **Go Idioms**: Use range loops and built-in functions when possible
+6. **Error Handling**: Implement proper error handling for slice operations
+7. **Testing**: Write comprehensive tests for slice manipulation functions
+8. **Documentation**: Document slice operations and their complexity
+9. **Optimization**: Look for ways to optimize slice access patterns
+10. **Practice**: Solve problems regularly to build slice manipulation skills
+
+## Additional Resources
+
+- [Go Tour - Slices](https://tour.golang.org/moretypes/7)
+- [Effective Go - Slices](https://golang.org/doc/effective_go.html#slices)
+- [Go by Example - Slices](https://gobyexample.com/slices)
+- [Go Language Specification - Slices](https://golang.org/ref/spec#Slice_types)
+
+Happy coding and good luck with your practice! 🚀
