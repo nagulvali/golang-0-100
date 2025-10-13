@@ -1,1 +1,19 @@
 /.idea
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+*.test
+
+*.out
+
+# env
+.env
+
+# workspace files
+go.work
+go.work.sum
+

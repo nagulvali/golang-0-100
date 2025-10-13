@@ -10,6 +10,7 @@ func printSlice(items []int) {
 	}
 }
 
+
 // we can have generic type which can take any or optional types as input param for function
 func printSlice1[T any](items []T) {
 	for _, value := range items {
@@ -18,9 +19,16 @@ func printSlice1[T any](items []T) {
 }
 
 
+// Generics in struct
+type Stack 
+
+
+
 func main() {
 
+	nums := []int{1, 2, 3, 4, 9, 8, 7}
 	names := []string{"john", "karol", "jack"}
+	printSlice1(nums)
 	printSlice1(names)
 
 }
