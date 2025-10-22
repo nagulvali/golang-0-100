@@ -1,14 +1,13 @@
 package consumer
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/smtp"
 	"sync"
-	"text/template"
 	"time"
 
+	ee "github.com/nagulvali/mailchimp/internal/pkg/emailexecutor"
 	tp "github.com/nagulvali/mailchimp/internal/pkg/types"
 )
 
@@ -29,12 +28,6 @@ func EmailWorker(id int, ch chan tp.Recipient, wg *sync.WaitGroup) {
 		// msg := []byte(formattedMsg)
 
 		// using custom template
-
-		tmpl, err := template.ParseFiles("Templates/email.tmpl")
-		if err != nil {
-			log.Fatalf("Error parsing template: %v", err)
-		}
-
 		data := tp.EmailData{
 			From: 			"no-reply@example.com",
 			To:					recipient.Email,
@@ -45,16 +38,13 @@ func EmailWorker(id int, ch chan tp.Recipient, wg *sync.WaitGroup) {
 			ButtonLink: "https://mailchimp-go.example.com/dashboard",
 		}
 
-		var buf bytes.Buffer
-		if err :=  tmpl.Execute(&buf, data); err != nil {
-			log.Fatalf("Error executing template: %v", err)
-		}
+		msg := ee.EmailExecutor(data)
 
 
-		fmt.Println(buf.String())
+		// fmt.Println(buf.String())
 		
 		fmt.Printf("Worker %d: Sending email to %s \n", id, recipient.Email)
-		err = smtp.SendMail(smtpHost + ":" + smtpPort, nil, "noreply@vali.com", []string{recipient.Email}, buf.Bytes())
+		err := smtp.SendMail(smtpHost + ":" + smtpPort, nil, "noreply@vali.com", []string{recipient.Email}, []byte(msg))
 		if err != nil {
 			// todo: handle errors in dlq to avoid blockage
 			log.Fatal(err)
