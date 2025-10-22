@@ -1,0 +1,72 @@
+From: {{.From}}
+To: {{.To}}
+Subject: {{.Subject}}
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="boundary42"
+
+--boundary42
+Content-Type: text/plain; charset="UTF-8"
+
+Hi {{.Name}},
+
+{{.Body}}
+
+{{if .ButtonLink}}
+Click the link below:
+{{.ButtonLink}}
+{{end}}
+
+Thank you,
+Mailchimp Go Team
+
+--boundary42
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{.Subject}}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: #ffffff;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    p { color: #555; line-height: 1.6; }
+    .button {
+      display: inline-block;
+      background: #007bff;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hello {{.Name}},</h1>
+    <p>{{.Body}}</p>
+    {{if .ButtonLink}}
+      <a href="{{.ButtonLink}}" class="button">{{.ButtonText}}</a>
+    {{end}}
+    <p style="margin-top:30px;color:#999;font-size:12px;">
+      Thank you,<br>Mailchimp Go Team
+    </p>
+  </div>
+</body>
+</html>
+
+--boundary42--
