@@ -1,0 +1,20 @@
+# Numerical Systems
+- There are different numerical systems used in programming and computer science. 
+- The most common ones are:
+  - Decimal (Base 10): 
+    - The standard system for denoting integer and non-integer numbers.
+    - This is the most widely used number system by humans.
+    - It uses ten digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9.
+    - 10^0 = 1, 10^1 = 10, 10^2 = 100, 10^3 = 1000, and so on.
+  - Binary (Base 2): 
+    - Used internally by almost all modern computers and computer-based devices because it is straightforward to implement with digital electronic circuitry. 
+    - It uses two digits: 0 and 1.
+    - 2^0 = 1, 2^1 = 2, 2^2 = 4, 2^3 = 8, and so on.
+  - Hexadecimal (Base 16): 
+    - Commonly used in programming and computer science as a human-friendly representation of binary-coded values. 
+    - It uses sixteen symbols: 0-9 to represent values zero to nine, and A-F (or a-f) to represent values ten to fifteen.
+    - 16^0 = 1, 16^1 = 16, 16^2 = 256, 16^3 = 4096, and so on.
+  - Octal (Base 8): 
+    - Sometimes used in computing as a more compact representation of binary numbers. 
+    - It uses eight digits: 0 to 7.
+    - 8^0 = 1, 8^1 = 8, 8^2 = 64, 8^3 = 512, and so on.
