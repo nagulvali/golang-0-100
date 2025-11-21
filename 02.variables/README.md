@@ -75,3 +75,39 @@ func main() {
     fmt.Printf("Hexadecimal: %x\n", num)   // Output: Hexadecimal: ff
 }
 ```
+
+## Constants
+- Constants are immutable values that cannot be changed once they are assigned.
+- They are declared using the `const` keyword.
+```golang
+const Pi = 3.14
+const Greeting = "Hello, World!"
+```
+- Constants can be of types: boolean, numeric (integer, float, complex), and string.
+- Constants must be assigned a value at the time of declaration and cannot be left uninitialized.
+- Constants can also be declared using the `iota` identifier, which is used to create a sequence of related constants.
+```golanggolang
+const (
+    Sunday = iota
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+)
+```
+- In the above example, `iota` starts at 0 and increments by 1 for each subsequent constant in the block.
+- So, `Sunday` will be 0, `Monday` will be 1, and so on.
+- You can also use `iota` to create bitmask constants or other patterns by using arithmetic operations.
+```golang
+const (
+    Read = 1 << iota  // 1 << 0 which is 1
+    Write             // 1 << 1 which is 2
+    Execute           // 1 << 2 which is 4
+)
+```
+- In this example, `Read`, `Write`, and `Execute` are assigned values of 1, 2, and 4 respectively, which can be used for permission settings.
+- Constants are useful for defining values that should remain unchanged throughout the program, such as mathematical constants, configuration values, or enumerated types.
+
+
