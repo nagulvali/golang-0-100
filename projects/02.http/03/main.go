@@ -20,5 +20,8 @@ func main() {
 	mux.HandleFunc("GET /users", api.getUsersHandler)
 	mux.HandleFunc("POST /users", api.createUsersHandler)
 
-	srv.ListenAndServe()
+	err := srv.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
 }
