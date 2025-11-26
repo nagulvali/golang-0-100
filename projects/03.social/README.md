@@ -25,6 +25,11 @@
 
 
 ## Principles
+
+### The 12 Factor App
+> https://12factor.net/
+
+
 ### Separation of concerns
 - Each level of your program should be seprate by a clean barrier
     - Transport layer
