@@ -18,25 +18,39 @@ type config struct {
 }
 
 /*
+MUX:
+====
+
 Mux is good but to group api's third party library would do better
 chi - routing library: https://go-chi.io/#/README
 */
-// func (app *application) mount() *http.ServeMux {
-// 	mux := http.NewServeMux()
 
-// 	mux.HandleFunc("GET /health", app.healthCheckHandler)
+/*
+func (app *application) mount() *http.ServeMux {
+	mux := http.NewServeMux()
 
-// 	return mux
-// }
+	mux.HandleFunc("GET /health", app.healthCheckHandler)
 
-// chi implementation
-// chi returns *chi.Mux which is http.Handler type
-// so we can use http.Handler instead chi.Mux which gives us leverage to implement our own router as well.
+	return mux
+}
+*/
+
+/*
+CHI:
+====
+chi implementation
+chi returns *chi.Mux which is http.Handler type
+so we can use http.Handler instead chi.Mux which gives us leverage to implement our own router as well.
+*/
 func (app *application) mount() http.Handler {
 
 	r := chi.NewRouter()
 
+	// A good base middleware stack: ref by chi github example
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
 	// r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 	// 	w.Write([]byte("welcome"))
