@@ -30,7 +30,9 @@ chi - routing library: https://go-chi.io/#/README
 // }
 
 // chi implementation
-func (app *application) mount() *chi.Mux {
+// chi returns *chi.Mux which is http.Handler type
+// so we can use http.Handler instead chi.Mux which gives us leverage to implement our own router as well.
+func (app *application) mount() http.Handler {
 
 	r := chi.NewRouter()
 
@@ -48,7 +50,7 @@ func (app *application) mount() *chi.Mux {
 
 }
 
-func (app *application) run(mux *chi.Mux) error {
+func (app *application) run(mux http.Handler) error {
 
 	srv := &http.Server{
 		Addr:         app.config.addr,
