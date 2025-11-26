@@ -73,6 +73,12 @@
 - Handler route the request to the appropriate handler
 - And then the request reaches to the service
     - This service is going to be injected, service takes care of the buisiness logic (app.CreateAndInviteUsers())
+    - delegating the creation or invte of the user to the repository
+- Service communicates with the repository
+    - repository implements access/modify/delete logic of the storage records
+    - CreateUser() or CreateInvite() wich will create records on external database.
+- Service and Repostiroy compose together as a transaction. These transactions can follow SAGA pattern. 
+    - But email communication sent can not be reverted, so sending another email saying transaction failed and try again would make sence.
 
 
 ## Saga pattern
